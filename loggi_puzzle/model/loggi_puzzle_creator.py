@@ -1,5 +1,4 @@
 import os
-import argparse
 import numpy as np
 import cv2
 import copy
@@ -9,7 +8,7 @@ import matplotlib.ticker as plticker
 from PIL import Image
 
 
-class LoggiCreator:
+class LoggiPuzzleCreator:
     def __init__(self, image_path: str = None, out_width: int = 0, out_height: int = 0):
         self.image_path = image_path
         self.out_width = out_width
@@ -140,28 +139,3 @@ class LoggiCreator:
                                  interpolation=cv2.INTER_AREA)
         im = Image.fromarray(ready_image)
         im.save("solution_{}".format(self.image_name))
-
-
-def main():
-    parser = argparse.ArgumentParser(description='Create puzzle.')
-    parser.add_argument('-ip', '--image-path',
-                        help='image path')
-    parser.add_argument('-size-x', '--puzzle-size-x',
-                        help='Puzzle size x')
-    parser.add_argument('-size-y', '--puzzle-size-y',
-                        help='Puzzle size y')
-    args = parser.parse_args()
-
-    lc = LoggiCreator(image_path=args.image_path,
-                      out_width=int(args.puzzle_size_x),
-                      out_height=int(args.puzzle_size_y))
-    lc.prepare_loggi()
-
-
-if __name__ == '__main__':
-    main()
-
-
-
-
-
