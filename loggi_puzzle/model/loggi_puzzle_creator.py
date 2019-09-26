@@ -14,7 +14,7 @@ class LoggiPuzzleCreator:
         self.out_width = out_width
         self.out_height = out_height
 
-        self.image_name = os.path.basename(self.image_path)
+        self.image_name = os.path.basename(self.image_path) if self.image_path else None
 
         self.black_white_image = None
         self.max_row = None
@@ -25,8 +25,8 @@ class LoggiPuzzleCreator:
 
     def prepare_loggi(self):
         self.prepare_black_white_image()
-        self.rows, self.max_row = self.prepare_puzzle_data(transpose=True)
-        self.columns, self.max_col = self.prepare_puzzle_data()
+        self.rows, self.max_row = self.prepare_puzzle_data()
+        self.columns, self.max_col = self.prepare_puzzle_data(transpose=True)
         my_dpi = self.prepare_grid_image()
 
         self.fig.savefig("puzzle_{}".format(self.image_name), dpi=my_dpi)
@@ -75,8 +75,8 @@ class LoggiPuzzleCreator:
         return image
 
     def prepare_grid_image(self):
-        width = int(self.box_size_pix * (len(self.rows) + self.max_col))
-        height = int(self.box_size_pix * (len(self.columns) + self.max_row))
+        width = int(self.box_size_pix * (len(self.columns) + self.max_row))
+        height = int(self.box_size_pix * (len(self.rows) + self.max_col))
         image = self.create_blank(width, height, rgb_color=(255, 255, 255))
         image = Image.fromarray(np.uint8(image))
         my_dpi = 50
@@ -87,13 +87,13 @@ class LoggiPuzzleCreator:
         self.fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
 
         # Set the gridding interval
-        loc_x_minor = plticker.IndexLocator(base=self.box_size_pix, offset=self.max_col * self.box_size_pix)
-        loc_y_minor = plticker.IndexLocator(base=self.box_size_pix, offset=self.max_row * self.box_size_pix)
+        loc_x_minor = plticker.IndexLocator(base=self.box_size_pix, offset=self.max_row * self.box_size_pix)
+        loc_y_minor = plticker.IndexLocator(base=self.box_size_pix, offset=self.max_col * self.box_size_pix)
         self.ax.xaxis.set_minor_locator(loc_x_minor)
         self.ax.yaxis.set_minor_locator(loc_y_minor)
         major_axis_dist = 5 * self.box_size_pix
-        loc_x_major = plticker.IndexLocator(base=major_axis_dist, offset=self.max_col * self.box_size_pix)
-        loc_y_major = plticker.IndexLocator(base=major_axis_dist, offset=self.max_row * self.box_size_pix)
+        loc_x_major = plticker.IndexLocator(base=major_axis_dist, offset=self.max_row * self.box_size_pix)
+        loc_y_major = plticker.IndexLocator(base=major_axis_dist, offset=self.max_col * self.box_size_pix)
         self.ax.xaxis.set_major_locator(loc_x_major)
         self.ax.yaxis.set_major_locator(loc_y_major)
 
@@ -109,22 +109,22 @@ class LoggiPuzzleCreator:
         return my_dpi
 
     def add_numbers_on_top(self):
-        for i in self.rows:
-            for j in range(len(self.rows[i])):
-                x = self.box_size_pix / 2 + (i + self.max_col) * self.box_size_pix
-                y = self.box_size_pix / 2. + float(j + (self.max_row - len(self.rows[i]))) * self.box_size_pix
+        for i in self.columns:
+            for j in range(len(self.columns[i])):
+                x = self.box_size_pix / 2 + (i + self.max_row) * self.box_size_pix
+                y = self.box_size_pix / 2. + float(j + (self.max_col - len(self.columns[i]))) * self.box_size_pix
 
-                text = self.rows[i][j]
+                text = self.columns[i][j]
                 self.ax.text(x, y, '{}'.format(text), color='black', ha='center', va='center',
                              fontsize=int(self.box_size_pix))
 
     def add_numbers_on_left(self):
-        for i in self.columns:
-            for j in range(len(self.columns[i])):
-                y = self.box_size_pix / 2 + (i + self.max_row) * self.box_size_pix
-                x = self.box_size_pix / 2. + float(j + (self.max_col - len(self.columns[i]))) * self.box_size_pix
+        for i in self.rows:
+            for j in range(len(self.rows[i])):
+                y = self.box_size_pix / 2 + (i + self.max_col) * self.box_size_pix
+                x = self.box_size_pix / 2. + float(j + (self.max_row - len(self.rows[i]))) * self.box_size_pix
 
-                text = self.columns[i][j]
+                text = self.rows[i][j]
                 self.ax.text(x, y, '{}'.format(text), color='black', ha='center', va='center',
                              fontsize=int(self.box_size_pix))
 
