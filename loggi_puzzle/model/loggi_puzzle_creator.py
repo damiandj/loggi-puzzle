@@ -44,14 +44,43 @@ class LoggiPuzzleCreator:
 
         self.black_white_image = ready_image
 
+    @staticmethod
+    def strip_image_empty_columns(image, reverse=False, transpose=False):
+        image_out = copy.deepcopy(image)
+        if transpose:
+            image_out = np.transpose(image_out)
+
+        if reverse:
+            image_out = np.flip(image_out, 0)
+        for row_num, row in enumerate(image_out):
+            if np.array_equal(row, np.zeros(len(row))):
+                image_out = np.delete(image_out, row_num, 0)
+            else:
+                break
+        if reverse:
+            image_out = np.flip(image_out, 0)
+        if transpose:
+            image_out = np.transpose(image_out)
+
+        return image_out
+
+    @staticmethod
+    def strip_image(image):
+        image = LoggiPuzzleCreator.strip_image_empty_columns(image)
+        image = LoggiPuzzleCreator.strip_image_empty_columns(image, reverse=True)
+
+        image = LoggiPuzzleCreator.strip_image_empty_columns(image, transpose=True)
+        image = LoggiPuzzleCreator.strip_image_empty_columns(image, reverse=True, transpose=True)
+
+        return image
+
     def prepare_puzzle_data(self, transpose: bool = False):
-        output = dict()
         if transpose:
             data = np.transpose(self.black_white_image)
         else:
             data = self.black_white_image
+        output = [[] for _ in range(len(data))]
         for num_row, row in enumerate(data):
-            output[num_row] = []
             counter = 0
             for item in row:
                 if item > 0:
@@ -63,7 +92,8 @@ class LoggiPuzzleCreator:
             if counter > 0:
                 output[num_row].append(counter)
 
-        max_len = max([len(val) for val in output.values()])
+        max_len = max([len(val) for val in output])
+
         return output, max_len
 
     @staticmethod
@@ -109,23 +139,21 @@ class LoggiPuzzleCreator:
         return my_dpi
 
     def add_numbers_on_top(self):
-        for i in self.columns:
-            for j in range(len(self.columns[i])):
-                x = self.box_size_pix / 2 + (i + self.max_row) * self.box_size_pix
-                y = self.box_size_pix / 2. + float(j + (self.max_col - len(self.columns[i]))) * self.box_size_pix
+        for num_col, column in enumerate(self.columns):
+            for num_row_in_column, row_in_column in enumerate(column):
+                x = self.box_size_pix / 2 + (num_col + self.max_row) * self.box_size_pix
+                y = self.box_size_pix / 2. + float(num_row_in_column + (self.max_col - len(column))) * self.box_size_pix
 
-                text = self.columns[i][j]
-                self.ax.text(x, y, '{}'.format(text), color='black', ha='center', va='center',
+                self.ax.text(x, y, '{}'.format(row_in_column), color='black', ha='center', va='center',
                              fontsize=int(self.box_size_pix))
 
     def add_numbers_on_left(self):
-        for i in self.rows:
-            for j in range(len(self.rows[i])):
-                y = self.box_size_pix / 2 + (i + self.max_col) * self.box_size_pix
-                x = self.box_size_pix / 2. + float(j + (self.max_row - len(self.rows[i]))) * self.box_size_pix
+        for num_row, row in enumerate(self.rows):
+            for num_col_in_row, col_in_row in enumerate(row):
+                y = self.box_size_pix / 2 + (num_row + self.max_col) * self.box_size_pix
+                x = self.box_size_pix / 2. + float(num_col_in_row + (self.max_row - len(row))) * self.box_size_pix
 
-                text = self.rows[i][j]
-                self.ax.text(x, y, '{}'.format(text), color='black', ha='center', va='center',
+                self.ax.text(x, y, '{}'.format(col_in_row), color='black', ha='center', va='center',
                              fontsize=int(self.box_size_pix))
 
     def save_black_white_image(self, pix_dpi):
