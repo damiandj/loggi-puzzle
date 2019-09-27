@@ -1,8 +1,7 @@
 # loggi-puzzle
 
-
 ## Usage
-```
+```python
 python loggi_puzzle/main.py -h
 usage: main.py [-h] [-ip IMAGE_PATH] [-size-x PUZZLE_SIZE_X]
                [-size-y PUZZLE_SIZE_Y]

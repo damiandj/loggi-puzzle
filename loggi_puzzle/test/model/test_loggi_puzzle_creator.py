@@ -50,7 +50,9 @@ def test_prepare_puzzle_data():
         [1, 2, 3],
         [6]
     ]
-    assert max_row == 3
+    exp_max_row = 3
+    if not max_row == exp_max_row:
+        raise AssertionError("{} == {}".format(max_row, exp_max_row))
     np.testing.assert_array_equal(rows_exp, rows)
 
     columns, max_col = lpc.prepare_puzzle_data(transpose=True)
@@ -67,7 +69,11 @@ def test_prepare_puzzle_data():
         [4],
         [2]
     ]
-    assert max_col == 3
+
+    exp_max_col = 3
+    if not max_col == exp_max_col:
+        raise AssertionError("{} == {}".format(max_col, exp_max_col))
+
     np.testing.assert_array_equal(columns_exp, columns)
 
 
