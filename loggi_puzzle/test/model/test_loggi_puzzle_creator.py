@@ -9,7 +9,7 @@ ASSETS_PATH = os.path.join("loggi_puzzle", "test", "assets")
 def test_prepare_black_white_image():
     lpc = LoggiPuzzleCreator(image_path=os.path.join(ASSETS_PATH, 'apple.jpg'),
                              out_height=10, out_width=10)
-    lpc.prepare_black_white_image()
+    img = lpc.prepare_black_white_image()
 
     exp = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -23,7 +23,7 @@ def test_prepare_black_white_image():
         [255, 255, 255, 255, 255, 255, 255, 255, 255, 0],
         [0, 0, 255, 255, 255, 255, 255, 255, 0, 0]
     ]
-    np.testing.assert_array_equal(exp, lpc.black_white_image)
+    np.testing.assert_array_equal(exp, img)
 
 
 def test_prepare_puzzle_data():
@@ -74,6 +74,7 @@ def test_prepare_puzzle_data():
 def test_strip_image():
     lpc = LoggiPuzzleCreator()
     image = [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 255, 255, 255, 0, 0, 0],
         [0, 255, 255, 255, 255, 0, 255, 255, 0, 0],

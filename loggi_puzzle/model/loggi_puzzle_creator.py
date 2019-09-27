@@ -24,7 +24,9 @@ class LoggiPuzzleCreator:
         self.box_size_pix = 25.
 
     def prepare_loggi(self):
-        self.prepare_black_white_image()
+        self.black_white_image = self.prepare_black_white_image()
+        self.black_white_image = self.strip_image(self.black_white_image)
+        self.out_height, self.out_width = self.black_white_image.shape
         self.rows, self.max_row = self.prepare_puzzle_data()
         self.columns, self.max_col = self.prepare_puzzle_data(transpose=True)
         my_dpi = self.prepare_grid_image()
@@ -42,7 +44,7 @@ class LoggiPuzzleCreator:
                 image_interior[row_num][item_num] = 255 - item
         ready_image = cv2.add(edges, image_interior)
 
-        self.black_white_image = ready_image
+        return ready_image
 
     @staticmethod
     def strip_image_empty_columns(image, reverse=False, transpose=False):
@@ -52,16 +54,18 @@ class LoggiPuzzleCreator:
 
         if reverse:
             image_out = np.flip(image_out, 0)
+        col_to_out = 0
         for row_num, row in enumerate(image_out):
             if np.array_equal(row, np.zeros(len(row))):
-                image_out = np.delete(image_out, row_num, 0)
+                col_to_out = row_num
             else:
                 break
+        image_out = np.array(image_out)[col_to_out+1:, :]
+
         if reverse:
             image_out = np.flip(image_out, 0)
         if transpose:
             image_out = np.transpose(image_out)
-
         return image_out
 
     @staticmethod
