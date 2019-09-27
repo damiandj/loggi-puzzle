@@ -5,11 +5,11 @@ from model import LoggiPuzzleCreator
 
 def create_loggi_puzzle():
     parser = argparse.ArgumentParser(description='Create puzzle.')
-    parser.add_argument('-ip', '--image-path',
+    parser.add_argument('-ip', '--image-path', required=True,
                         help='image path')
-    parser.add_argument('-size-x', '--puzzle-size-x',
+    parser.add_argument('-size-x', '--puzzle-size-x', required=True,
                         help='Puzzle size x')
-    parser.add_argument('-size-y', '--puzzle-size-y',
+    parser.add_argument('-size-y', '--puzzle-size-y', required=True,
                         help='Puzzle size y')
     args = parser.parse_args()
 
