@@ -19,5 +19,4 @@ optional arguments:
                         Puzzle size y
 
 python loggi_puzzle/main.py -ip apple.jpg -size-x 25 -size-y 25
-
 ```
