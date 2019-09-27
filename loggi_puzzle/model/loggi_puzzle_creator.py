@@ -103,7 +103,7 @@ class LoggiPuzzleCreator:
     @staticmethod
     def create_blank(width, height, rgb_color=(0, 0, 0)):
         image = np.zeros((height, width, 3), np.uint8)
-        color = tuple(reversed(rgb_color))
+        color = tuple(rgb_color)
         image[:] = color
 
         return image
@@ -160,7 +160,7 @@ class LoggiPuzzleCreator:
                 self.ax.text(x, y, '{}'.format(col_in_row), color='black', ha='center', va='center',
                              fontsize=int(self.box_size_pix))
 
-    def save_black_white_image(self, pix_dpi):
+    def save_black_white_image(self, pix_dpi, save_path='.'):
         ready_image = copy.deepcopy(self.black_white_image)
         for row_num, row in enumerate(ready_image):
             for item_num, item in enumerate(row):
@@ -170,4 +170,5 @@ class LoggiPuzzleCreator:
                                   int(self.out_height * pix_dpi)),
                                  interpolation=cv2.INTER_AREA)
         im = Image.fromarray(ready_image)
-        im.save("solution_{}".format(self.image_name))
+        os.makedirs(save_path, exist_ok=True)
+        im.save(os.path.join(save_path, "solution_{}".format(self.image_name)))

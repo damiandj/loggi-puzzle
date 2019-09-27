@@ -1,4 +1,5 @@
 import os
+from PIL import Image
 import numpy as np
 
 from loggi_puzzle.model import LoggiPuzzleCreator
@@ -106,3 +107,29 @@ def test_strip_image():
     image_out = lpc.strip_image(image)
 
     np.testing.assert_array_equal(image_out_exp, image_out)
+
+
+def test_create_blank():
+    blank = LoggiPuzzleCreator.create_blank(2, 3, rgb_color=(1, 2, 3))
+    blank_exp = [[[1, 2, 3], [1, 2, 3]],
+                 [[1, 2, 3], [1, 2, 3]],
+                 [[1, 2, 3], [1, 2, 3]]]
+
+    np.testing.assert_array_equal(blank, blank_exp)
+
+
+def test_save_black_white_image():
+    lpc = LoggiPuzzleCreator(image_path=os.path.join(ASSETS_PATH, 'apple.jpg'),
+                             out_height=20, out_width=20)
+    lpc.black_white_image = lpc.prepare_black_white_image()
+    lpc.save_black_white_image(pix_dpi=25, save_path=os.path.join(ASSETS_PATH, 'out'))
+
+    img_out = Image.open(os.path.join(ASSETS_PATH, 'out', 'solution_apple.jpg'))
+    img_out.load()
+    data_out = np.asarray(img_out, dtype="int32")
+
+    img_exp = Image.open(os.path.join(ASSETS_PATH, 'solution_apple.jpg'))
+    img_exp.load()
+    data_exp = np.asarray(img_exp, dtype="int32")
+
+    np.testing.assert_array_equal(data_exp, data_out)
