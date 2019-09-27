@@ -1,0 +1,1 @@
+from .loggi_puzzle_creator import LoggiPuzzleCreator
