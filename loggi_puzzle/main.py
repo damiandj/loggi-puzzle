@@ -11,11 +11,14 @@ def create_loggi_puzzle():
                         help='Puzzle size x')
     parser.add_argument('-size-y', '--puzzle-size-y', required=True,
                         help='Puzzle size y')
+    parser.add_argument('-sp', '--save-path', required=False, default='.',
+                        help='Output save path')
     args = parser.parse_args()
 
     lc = LoggiPuzzleCreator(image_path=args.image_path,
                             out_width=int(args.puzzle_size_x),
-                            out_height=int(args.puzzle_size_y))
+                            out_height=int(args.puzzle_size_y),
+                            save_path=args.save_path)
     lc.prepare_loggi()
 
 

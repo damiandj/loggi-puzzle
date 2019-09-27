@@ -9,13 +9,13 @@ from PIL import Image
 
 
 class LoggiPuzzleCreator:
-    def __init__(self, image_path: str = None, out_width: int = 0, out_height: int = 0):
+    def __init__(self, image_path: str = None, out_width: int = 0, out_height: int = 0, save_path='.'):
         self.image_path = image_path
         self.out_width = out_width
         self.out_height = out_height
-
+        self.save_path = save_path
         self.image_name = os.path.basename(self.image_path) if self.image_path else None
-
+        os.makedirs(self.save_path, exist_ok=True)
         self.black_white_image = None
         self.max_row = None
         self.rows = None
@@ -31,7 +31,7 @@ class LoggiPuzzleCreator:
         self.columns, self.max_col = self.prepare_puzzle_data(transpose=True)
         my_dpi = self.prepare_grid_image()
 
-        self.fig.savefig("puzzle_{}".format(self.image_name), dpi=my_dpi)
+        self.fig.savefig(os.path.join(self.save_path, "puzzle_{}".format(self.image_name)), dpi=my_dpi)
         self.save_black_white_image(pix_dpi=self.box_size_pix)
 
     def prepare_black_white_image(self):
@@ -160,7 +160,7 @@ class LoggiPuzzleCreator:
                 self.ax.text(x, y, '{}'.format(col_in_row), color='black', ha='center', va='center',
                              fontsize=int(self.box_size_pix))
 
-    def save_black_white_image(self, pix_dpi, save_path='.'):
+    def save_black_white_image(self, pix_dpi):
         ready_image = copy.deepcopy(self.black_white_image)
         for row_num, row in enumerate(ready_image):
             for item_num, item in enumerate(row):
@@ -170,5 +170,4 @@ class LoggiPuzzleCreator:
                                   int(self.out_height * pix_dpi)),
                                  interpolation=cv2.INTER_AREA)
         im = Image.fromarray(ready_image)
-        os.makedirs(save_path, exist_ok=True)
-        im.save(os.path.join(save_path, "solution_{}".format(self.image_name)))
+        im.save(os.path.join(self.save_path, "solution_{}".format(self.image_name)))
