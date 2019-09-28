@@ -9,13 +9,13 @@ from PIL import Image
 
 
 class LoggiPuzzleCreator:
-    def __init__(self, image_path: str = None, out_width: int = 0, out_height: int = 0):
+    def __init__(self, image_path: str = None, out_width: int = 0, out_height: int = 0, save_path='.'):
         self.image_path = image_path
         self.out_width = out_width
         self.out_height = out_height
-
+        self.save_path = save_path
         self.image_name = os.path.basename(self.image_path) if self.image_path else None
-
+        os.makedirs(self.save_path, exist_ok=True)
         self.black_white_image = None
         self.max_row = None
         self.rows = None
@@ -31,7 +31,7 @@ class LoggiPuzzleCreator:
         self.columns, self.max_col = self.prepare_puzzle_data(transpose=True)
         my_dpi = self.prepare_grid_image()
 
-        self.fig.savefig("puzzle_{}".format(self.image_name), dpi=my_dpi)
+        self.fig.savefig(os.path.join(self.save_path, "puzzle_{}".format(self.image_name)), dpi=my_dpi)
         self.save_black_white_image(pix_dpi=self.box_size_pix)
 
     def prepare_black_white_image(self):
@@ -103,7 +103,7 @@ class LoggiPuzzleCreator:
     @staticmethod
     def create_blank(width, height, rgb_color=(0, 0, 0)):
         image = np.zeros((height, width, 3), np.uint8)
-        color = tuple(reversed(rgb_color))
+        color = tuple(rgb_color)
         image[:] = color
 
         return image
@@ -170,4 +170,4 @@ class LoggiPuzzleCreator:
                                   int(self.out_height * pix_dpi)),
                                  interpolation=cv2.INTER_AREA)
         im = Image.fromarray(ready_image)
-        im.save("solution_{}".format(self.image_name))
+        im.save(os.path.join(self.save_path, "solution_{}".format(self.image_name)))
